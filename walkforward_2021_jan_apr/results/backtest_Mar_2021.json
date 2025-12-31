@@ -3,12 +3,12 @@
   "month": "Mar_2021",
   "train_days": 251,
   "test_days": 23,
-  "trades": 4,
-  "win_rate": 50.0,
-  "total_return": 2.31146592496043,
-  "sharpe_ratio": -22.977799360181113,
-  "max_drawdown": 7.879662154231483,
-  "profit_factor": 1.237257040286771,
+  "trades": 3,
+  "win_rate": 66.66666666666666,
+  "total_return": 2.915041203246801,
+  "sharpe_ratio": -23.081829726713902,
+  "max_drawdown": 7.324903017215546,
+  "profit_factor": 1.337810411035516,
   "train_samples": 251,
   "test_samples": 23
 }

@@ -1,10 +1,10 @@
 {
-  "total_return": 0.1883080525240075,
+  "total_return": 20.69669928530311,
   "buy_hold_return": 12.26,
-  "excess_return": -12.071691947475992,
-  "avg_win_rate": 37.5,
-  "avg_sharpe": -28.90636791286518,
-  "worst_drawdown": 7.879662154231483,
-  "profitable_months": 3,
+  "excess_return": 8.436699285303112,
+  "avg_win_rate": 66.66666666666666,
+  "avg_sharpe": -27.356309028148658,
+  "worst_drawdown": 7.324903017215546,
+  "profitable_months": 4,
   "total_months": 4
 }
