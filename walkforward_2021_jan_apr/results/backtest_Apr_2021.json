@@ -1,0 +1,14 @@
+{
+  "iteration": 4,
+  "month": "Apr_2021",
+  "train_days": 252,
+  "test_days": 21,
+  "trades": 1,
+  "win_rate": 0.0,
+  "total_return": -4.16163471047912,
+  "sharpe_ratio": -39.62965504354684,
+  "max_drawdown": 5.641162560408701,
+  "profit_factor": 0.0,
+  "train_samples": 252,
+  "test_samples": 21
+}
