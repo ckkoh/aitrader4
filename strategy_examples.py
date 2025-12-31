@@ -284,13 +284,17 @@ class MLStrategy(Strategy):
     """
 
     def __init__(self, model_path: str, feature_cols: List[str],
-                 confidence_threshold: float = 0.6):
-        super().__init__(name="ML_Strategy")
+                 confidence_threshold: float = 0.6,
+                 regime_adaptive: bool = True):
+        super().__init__(name="ML_Strategy_RegimeAdaptive" if regime_adaptive else "ML_Strategy")
         self.model_path = model_path
         self.feature_cols = feature_cols
-        self.confidence_threshold = confidence_threshold
+        self.base_confidence_threshold = confidence_threshold
+        self.confidence_threshold = confidence_threshold  # Will be adjusted by regime
+        self.regime_adaptive = regime_adaptive
         self.trainer = None
         self.last_features = None
+        self.current_regime = None
 
         # Load model
         self._load_model()
@@ -331,7 +335,7 @@ class MLStrategy(Strategy):
         logger.info("ML model training complete")
 
     def generate_signals(self, data: pd.DataFrame, timestamp: datetime) -> List[Dict]:
-        """Generate ML-based signals"""
+        """Generate ML-based signals with regime adaptation"""
         signals = []
 
         if len(data) < 200:  # Need enough data for features
@@ -348,6 +352,34 @@ class MLStrategy(Strategy):
                 data.copy(), include_volume=True
             )
 
+            # Regime detection and parameter adaptation
+            if self.regime_adaptive and len(data) >= 200:
+                try:
+                    from regime_detection import detect_current_regime
+                    regime, regime_params = detect_current_regime(data, ma_period=200)
+                    self.current_regime = regime
+
+                    # Adjust confidence threshold based on regime
+                    self.confidence_threshold = regime_params['confidence_threshold']
+
+                    # Get stop/take profit multipliers
+                    stop_mult = regime_params['stop_loss_atr_mult']
+                    take_mult = regime_params['take_profit_atr_mult']
+
+                    logger.debug(f"Regime: {regime.value}, Confidence: {self.confidence_threshold:.2f}, "
+                               f"SL: {stop_mult:.1f}x, TP: {take_mult:.1f}x")
+
+                except Exception as e:
+                    logger.warning(f"Regime detection failed: {e}, using base parameters")
+                    self.confidence_threshold = self.base_confidence_threshold
+                    stop_mult = 2.0
+                    take_mult = 3.0
+            else:
+                # No regime adaptation
+                self.confidence_threshold = self.base_confidence_threshold
+                stop_mult = 2.0
+                take_mult = 3.0
+
             # Get last row features
             latest = data_with_features.iloc[-1]
 
@@ -361,7 +393,9 @@ class MLStrategy(Strategy):
             # Confidence for the predicted class
             confidence = proba[prediction]
 
-            logger.debug(f"ML Prediction: {prediction}, Confidence: {confidence:.3f}")
+            regime_info = f" ({self.current_regime.value})" if self.current_regime else ""
+            logger.debug(f"ML Prediction: {prediction}, Confidence: {confidence:.3f}, "
+                        f"Threshold: {self.confidence_threshold:.2f}{regime_info}")
 
             # Only trade if confidence is high enough
             if confidence < self.confidence_threshold:
@@ -374,8 +408,8 @@ class MLStrategy(Strategy):
             if not has_position:
                 # Buy signal (prediction = 1)
                 if prediction == 1:
-                    stop_loss = current_price - (2 * atr)
-                    take_profit = current_price + (3 * atr)
+                    stop_loss = current_price - (stop_mult * atr)
+                    take_profit = current_price + (take_mult * atr)
 
                     signals.append({
                         'instrument': instrument,
@@ -387,8 +421,8 @@ class MLStrategy(Strategy):
 
                 # Sell signal (prediction = 0 or -1)
                 elif prediction == 0 or prediction == -1:
-                    stop_loss = current_price + (2 * atr)
-                    take_profit = current_price - (3 * atr)
+                    stop_loss = current_price + (stop_mult * atr)
+                    take_profit = current_price - (take_mult * atr)
 
                     signals.append({
                         'instrument': instrument,

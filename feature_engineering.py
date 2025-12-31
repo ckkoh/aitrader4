@@ -297,27 +297,42 @@ class FeatureEngineering:
 
     @staticmethod
     def add_market_regime_features(df: pd.DataFrame) -> pd.DataFrame:
-        """Add market regime features"""
-        # Trend strength
-        df['trend_strength'] = abs(df['ema_12'] - df['ema_26']) / df['close'] if 'ema_12' in df.columns else 0
+        """Add comprehensive market regime features using 200-day MA"""
+        try:
+            from regime_detection import RegimeDetector
 
-        # Price distance from moving averages
-        for period in [20, 50, 200]:
-            if f'sma_{period}' in df.columns:
-                df[f'price_vs_sma_{period}'] = (df['close'] - df[f'sma_{period}']) / df[f'sma_{period}']
+            # Initialize regime detector
+            detector = RegimeDetector(ma_period=200, trend_lookback=50, volatility_period=20)
 
-        # Moving average slopes
-        for period in [20, 50]:
-            if f'sma_{period}' in df.columns:
-                df[f'sma_{period}_slope'] = df[f'sma_{period}'].diff(5) / df[f'sma_{period}']
+            # Add all regime features
+            df = detector.add_regime_features(df)
 
-        # Volatility regime (high/low based on percentile)
-        if 'volatility_20' in df.columns:
-            df['vol_percentile'] = df['volatility_20'].rolling(window=100).apply(
-                lambda x: pd.Series(x).rank(pct=True).iloc[-1]
-            )
-            df['high_vol_regime'] = (df['vol_percentile'] > 0.7).astype(int)
-            df['low_vol_regime'] = (df['vol_percentile'] < 0.3).astype(int)
+            logger.info("Added regime detection features (200-day MA based)")
+
+        except Exception as e:
+            logger.warning(f"Could not add regime features: {e}, using basic features")
+
+            # Fallback: basic features if regime_detection not available
+            # Trend strength
+            df['trend_strength'] = abs(df['ema_12'] - df['ema_26']) / df['close'] if 'ema_12' in df.columns else 0
+
+            # Price distance from moving averages
+            for period in [20, 50, 200]:
+                if f'sma_{period}' in df.columns:
+                    df[f'price_vs_sma_{period}'] = (df['close'] - df[f'sma_{period}']) / df[f'sma_{period}']
+
+            # Moving average slopes
+            for period in [20, 50]:
+                if f'sma_{period}' in df.columns:
+                    df[f'sma_{period}_slope'] = df[f'sma_{period}'].diff(5) / df[f'sma_{period}']
+
+            # Volatility regime (high/low based on percentile)
+            if 'volatility_20' in df.columns:
+                df['vol_percentile'] = df['volatility_20'].rolling(window=100).apply(
+                    lambda x: pd.Series(x).rank(pct=True).iloc[-1]
+                )
+                df['high_vol_regime'] = (df['vol_percentile'] > 0.7).astype(int)
+                df['low_vol_regime'] = (df['vol_percentile'] < 0.3).astype(int)
 
         return df
 
