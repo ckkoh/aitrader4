@@ -343,9 +343,9 @@ class MLStrategy(Strategy):
             # Get current features
             from feature_engineering import FeatureEngineering
 
-            # Calculate features for current data
+            # Calculate features for current data (must match training!)
             data_with_features = FeatureEngineering.build_complete_feature_set(
-                data.copy(), include_volume=False
+                data.copy(), include_volume=True
             )
 
             # Get last row features
