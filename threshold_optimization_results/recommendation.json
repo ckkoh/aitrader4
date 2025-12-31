@@ -1,0 +1,18 @@
+{
+  "recommended_threshold": 0.5,
+  "metrics": {
+    "trades": 7,
+    "win_rate": 0.42857142857142855,
+    "total_return": -0.020409280818148544,
+    "sharpe_ratio": -18.66535086499682,
+    "max_drawdown": 0.21056734467936963
+  },
+  "optimization_date": "2025-12-31T16:17:50.363000",
+  "all_thresholds_tested": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7
+  ]
+}

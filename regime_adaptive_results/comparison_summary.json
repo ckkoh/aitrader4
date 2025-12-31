@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "avg_win_rate": 0.44793650793650797,
+    "avg_return": -0.01702482449957096,
+    "avg_sharpe": -21.243715987689242,
+    "positive_periods_pct": 46.666666666666664
+  },
+  "adaptive": {
+    "avg_win_rate": 0.0,
+    "avg_return": 0.0,
+    "avg_sharpe": 0.0,
+    "positive_periods_pct": 0.0
+  },
+  "improvements": {
+    "win_rate": -44.7936507936508,
+    "return": 1.7024824499570959,
+    "sharpe": 21.243715987689242,
+    "max_dd": 28.36082931428492,
+    "positive_periods": "-7"
+  },
+  "criteria_passed": 3,
+  "criteria_total": 6,
+  "validation_date": "2025-12-31T17:02:40.187369"
+}

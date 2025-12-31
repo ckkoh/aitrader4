@@ -1,0 +1,66 @@
+{
+  "results": {
+    "with_leakage": {
+      "model_name": "model_with_leakage.pkl",
+      "features_count": 86,
+      "train_accuracy": 0,
+      "trades": 6,
+      "win_rate": 0.6666666666666666,
+      "total_return": 0.13092907249414565,
+      "sharpe_ratio": -18.16555767507228,
+      "max_drawdown": 0.11308717119829662,
+      "profit_factor": 2.0428036988375022
+    },
+    "all_clean": {
+      "model_name": "model_all_clean.pkl",
+      "features_count": 82,
+      "train_accuracy": 0,
+      "trades": 7,
+      "win_rate": 0.42857142857142855,
+      "total_return": -0.020409280818148544,
+      "sharpe_ratio": -18.66535086499682,
+      "max_drawdown": 0.21056734467936963,
+      "profit_factor": 0.8889503837125732
+    },
+    "top_20": {
+      "model_name": "model_top20.pkl",
+      "features_count": 20,
+      "train_accuracy": 0,
+      "trades": 6,
+      "win_rate": 0.6666666666666666,
+      "total_return": 0.13092907249414565,
+      "sharpe_ratio": -18.16555767507228,
+      "max_drawdown": 0.11308717119829662,
+      "profit_factor": 2.0428036988375022
+    }
+  },
+  "improvements": {
+    "win_rate_change": 0.0,
+    "return_change": 0.0,
+    "sharpe_change": 0.0,
+    "trades_change": 0
+  },
+  "top_features": [
+    "bullish_engulfing",
+    "stoch_d_3",
+    "week_of_year",
+    "atr_14",
+    "regime",
+    "roc_20",
+    "obv",
+    "parkinson_vol_10",
+    "volatility_200d",
+    "momentum_5",
+    "macd_signal",
+    "adx_14",
+    "month_sin",
+    "hl_ratio",
+    "rsi_14",
+    "stoch_k_14",
+    "bb_position_20",
+    "momentum_oscillator",
+    "pvt",
+    "price_acceleration"
+  ],
+  "analysis_date": "2025-12-31T16:26:29.524615"
+}

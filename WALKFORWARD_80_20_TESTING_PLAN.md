@@ -286,40 +286,60 @@ Strategy validation criteria (based on CLAUDE.md guidelines):
 7. ✅ Comprehensive testing script
 8. ✅ Performance reporting system
 
-### Known Issue
-The current momentum strategy generated **0 trades** across all test splits because:
-- Test period is only 10 days (2 weeks)
-- Strategy requires 20-day SMA calculation
-- Test data alone insufficient for indicator calculation
+### ✅ ISSUE RESOLVED
+~~The current momentum strategy generated **0 trades** across all test splits because:~~
+~~- Test period is only 10 days (2 weeks)~~
+~~- Strategy requires 20-day SMA calculation~~
+~~- Test data alone insufficient for indicator calculation~~
 
-**Solution Required**:
-The backtesting engine should be modified to:
-1. Use TRAINING data to calculate indicators
-2. Generate signals only during TEST period
-3. This is standard walk-forward practice
+**✅ Solution Implemented**:
+The backtesting engine has been successfully modified to:
+1. ✅ Use TRAINING data to calculate indicators
+2. ✅ Generate signals only during TEST period
+3. ✅ This is standard walk-forward practice
 
-### Next Steps (To Make Strategy Functional)
+**Implementation** (see `momentum_strategy_80_20.py` lines 258-265):
+```python
+# Combine train + test data for indicator calculation
+combined_data = pd.concat([train_data, test_data])
+test_start_date = test_data.index[0]
 
-1. **Modify Backtesting Approach**:
-   ```python
-   # Instead of:
-   results = engine.run_backtest(strategy, test_data)
+# Run backtest on COMBINED data, but only trade during TEST period
+results = engine.run_backtest(strategy, combined_data,
+                               trading_start_date=test_start_date)
+```
 
-   # Use:
-   combined_data = pd.concat([train_data, test_data])
-   results = engine.run_backtest(strategy, combined_data,
-                                  test_start_date=test_data.index[0])
+**Verification** (2025-12-31):
+- ✅ Split 1: 2 trades generated
+- ✅ Split 2: 1 trade generated
+- ✅ Split 3: 1 trade generated
+- ✅ All trades executed only during test period
+- ✅ Indicators calculated using full historical context
+
+### ✅ Next Steps (Framework is Ready)
+
+The walk-forward testing framework is now **fully functional**. You can:
+
+1. **Run Full Backtest on All Splits**:
+   ```bash
+   python3 run_all_splits_backtest.py
    ```
+   This will test the momentum strategy on:
+   - 30 splits from Dataset_1_Recent (2020-2025)
+   - 50 splits from Dataset_2_Historical (2010-2019)
+   - Generate comprehensive performance reports
 
-2. **Alternative: Expand Test Period**:
-   - Use 12-week training + 3-week testing
-   - Or 16-week training + 4-week testing
-   - Provides more test data for signal generation
+2. **Optimize Strategy Parameters** (Optional):
+   - Test different SMA periods (10/20, 15/30, 20/50)
+   - Adjust ROC threshold (0.5%, 1.0%, 1.5%)
+   - Tune ATR multipliers for stop loss/take profit
+   - Use training data to optimize, test data to validate
 
-3. **Parameter Optimization**:
-   - Use training data to optimize SMA periods
-   - Use test data to validate performance
-   - Compare across different parameter sets
+3. **Implement ML-Based Strategy** (As per IMPROVEMENTS_PLAN.md):
+   - Replace momentum strategy with ML predictions
+   - Use same walk-forward framework
+   - Train on each training split, test on corresponding test split
+   - Compare ML vs momentum performance
 
 ## Files Created
 
