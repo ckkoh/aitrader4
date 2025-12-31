@@ -315,7 +315,7 @@ class RegimeAdaptiveMLStrategy(Strategy):
         # 6. Get ML prediction
         try:
             prediction_proba = self.model.predict_proba(features)[0]
-            confidence = max(prediction_proba)
+            confidence = prediction_proba[1]  # FIX: Use probability of BUY class, not max
             predicted_class = int(prediction_proba[1] > 0.5)  # 1 = buy, 0 = sell/hold
         except Exception as e:
             return signals

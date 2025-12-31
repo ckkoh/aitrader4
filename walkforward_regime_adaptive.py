@@ -137,9 +137,9 @@ class RegimeAdaptiveValidator:
             strategy = RegimeAdaptiveMLStrategy(
                 model_path=str(model_path),
                 feature_cols=self.top_features,
-                base_confidence_threshold=0.55,
+                base_confidence_threshold=0.50,  # Lowered from 0.55
                 enable_regime_adaptation=True,
-                skip_volatile_regimes=True,  # SKIP volatile markets
+                skip_volatile_regimes=False,  # FIX: Don't skip, use threshold adjustment instead
                 skip_bear_regimes=False  # Trade conservatively in bear
             )
         else:  # baseline
