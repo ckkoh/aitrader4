@@ -20,11 +20,19 @@ This is a **production-ready algorithmic S&P 500 trading system** with ML-powere
 
 ## S&P 500 TRADING CONFIGURATION
 
+### ⚡ Quick Reference
+
 **Instrument:** SPX500_USD (S&P 500 Index via Oanda)
-**Primary Timeframe:** D (Daily) for swing trading
-**Secondary Timeframe:** M15 (15-minute) for intraday (see spx500_day_trading.py)
+**Primary Timeframe:** **D (Daily)** ← RECOMMENDED for swing trading
+**Secondary Timeframe:** **M15 (15-minute)** ← For intraday only
+**❌ NOT M5:** System uses Daily or M15, NOT M5 (5-minute)
 **Trading Hours:** 9:30 AM - 4:00 PM ET (US market hours only)
 **Data Source:** Oanda API or Yahoo Finance (^GSPC)
+
+**Total Indicators:** 50+ technical indicators (see list below)
+**Volume:** MANDATORY - Always use `include_volume=True`
+**Position Size:** Max 2% of capital notional value
+**Commission:** 0.1% per trade (vs 0.01% for forex)
 
 ### Optimal S&P 500 Parameters
 
@@ -65,6 +73,30 @@ config = BacktestConfig(
 - Stochastic(14,3): Momentum confirmation
 - Volume ratio: Current volume / 20-day avg
 - VIX correlation: High VIX = avoid longs
+
+### 📊 Complete Indicator List (50+ Total)
+
+**11 Core Technical Indicators:**
+1. SMA - Simple Moving Averages (10, 20, 50, 200)
+2. EMA - Exponential Moving Averages (12, 26, 50)
+3. RSI - Relative Strength Index (14)
+4. MACD - Moving Average Convergence Divergence (12/26/9)
+5. Bollinger Bands - (20, 2 std)
+6. ATR - Average True Range (14)
+7. ADX - Average Directional Index (14)
+8. Stochastic Oscillator - (14/3)
+9. CCI - Commodity Channel Index (20)
+10. Williams %R - (14)
+11. OBV - On-Balance Volume
+
+**Feature Engineering Categories (40+ derived features):**
+- **Price Features:** OHLC ratios, price vs SMA/EMA, returns, log returns, price acceleration
+- **Momentum Features:** ROC, momentum indicators, price velocity
+- **Volatility Features:** ATR-based, rolling std, Bollinger width, volatility ratios
+- **Volume Features:** Volume ratios, OBV, volume trends, volume MA (CRITICAL for S&P 500!)
+- **Pattern Features:** Candlestick patterns, support/resistance levels
+- **Market Regime:** Trending/ranging detection, bull/bear market classification
+- **Time Features:** Hour, day of week, month, quarter (for M15 intraday)
 
 **S&P 500 Feature Set:**
 ```python
