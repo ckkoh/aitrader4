@@ -73,6 +73,7 @@ class BacktestConfig:
     commission_pct: float = 0.0001  # 1 pip = 0.01%
     slippage_pct: float = 0.0001    # 1 pip slippage
     position_size_pct: float = 0.02  # 2% risk per trade
+    max_position_value_pct: float = 0.02  # Max 2% of capital per position (notional value)
     max_positions: int = 1
     leverage: float = 1.0
     risk_free_rate: float = 0.02  # For Sharpe calculation
@@ -240,7 +241,7 @@ class PositionSizer:
 
     @staticmethod
     def fixed_percentage(capital: float, risk_pct: float, entry_price: float,
-                         stop_loss: float) -> float:
+                         stop_loss: float, max_position_value_pct: float = 0.05) -> float:
         """
         Fixed percentage risk per trade
 
@@ -249,9 +250,10 @@ class PositionSizer:
             risk_pct: Percentage of capital to risk (0.02 = 2%)
             entry_price: Entry price for the trade
             stop_loss: Stop loss price
+            max_position_value_pct: Max position value as % of capital (0.10 = 10%)
 
         Returns:
-            Position size
+            Position size (capped by max position value)
         """
         risk_amount = capital * risk_pct
         price_risk = abs(entry_price - stop_loss)
@@ -260,11 +262,18 @@ class PositionSizer:
             return 0
 
         position_size = risk_amount / price_risk
+
+        # Cap position size by maximum notional value
+        max_notional_value = capital * max_position_value_pct
+        max_position_size = max_notional_value / entry_price
+        position_size = min(position_size, max_position_size)
+
         return position_size
 
     @staticmethod
     def volatility_adjusted(capital: float, risk_pct: float, atr: float,
-                            entry_price: float, atr_multiplier: float = 2.0) -> float:
+                            entry_price: float, atr_multiplier: float = 2.0,
+                            max_position_value_pct: float = 0.05) -> float:
         """
         Position sizing based on ATR volatility
 
@@ -274,9 +283,10 @@ class PositionSizer:
             atr: Average True Range
             entry_price: Entry price
             atr_multiplier: ATR multiplier for stop distance
+            max_position_value_pct: Max position value as % of capital (0.10 = 10%)
 
         Returns:
-            Position size
+            Position size (capped by max position value)
         """
         risk_amount = capital * risk_pct
         stop_distance = atr * atr_multiplier
@@ -285,6 +295,12 @@ class PositionSizer:
             return 0
 
         position_size = risk_amount / stop_distance
+
+        # Cap position size by maximum notional value
+        max_notional_value = capital * max_position_value_pct
+        max_position_size = max_notional_value / entry_price
+        position_size = min(position_size, max_position_size)
+
         return position_size
 
     @staticmethod
@@ -737,18 +753,22 @@ class BacktestEngine:
                     self.current_capital,
                     self.config.position_size_pct,
                     entry_price,
-                    stop_loss
+                    stop_loss,
+                    self.config.max_position_value_pct
                 )
             else:
-                # Default to fixed percentage of capital
-                return (self.current_capital * self.config.position_size_pct) / entry_price
+                # Default to fixed percentage of capital (capped)
+                max_notional = self.current_capital * self.config.max_position_value_pct
+                return max_notional / entry_price
 
         elif self.config.position_sizing_method == 'volatility' and atr:
             return PositionSizer.volatility_adjusted(
                 self.current_capital,
                 self.config.position_size_pct,
                 atr,
-                entry_price
+                entry_price,
+                2.0,
+                self.config.max_position_value_pct
             )
 
         elif self.config.position_sizing_method == 'kelly' and len(self.trades) > 20:
@@ -759,10 +779,15 @@ class BacktestEngine:
             avg_loss = abs(recent_trades[recent_trades['pnl'] < 0]['pnl'].mean())
 
             kelly_pct = PositionSizer.kelly_criterion(win_rate, avg_win, avg_loss)
-            return (self.current_capital * kelly_pct) / entry_price
+            # Cap Kelly by max position value
+            kelly_size = (self.current_capital * kelly_pct) / entry_price
+            max_notional = self.current_capital * self.config.max_position_value_pct
+            max_size = max_notional / entry_price
+            return min(kelly_size, max_size)
 
-        # Default
-        return (self.current_capital * self.config.position_size_pct) / entry_price
+        # Default (capped)
+        max_notional = self.current_capital * self.config.max_position_value_pct
+        return max_notional / entry_price
 
     def _get_bid_price(self, mid_price: float) -> float:
         """Get bid price accounting for spread"""
