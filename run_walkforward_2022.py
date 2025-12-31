@@ -23,6 +23,7 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 MODEL_TYPE = 'xgboost'
 CONFIDENCE_THRESHOLD = 0.55  # Lowered from 0.65 for 2022 volatile period
+HYPERPARAMETER_TUNING = True  # Enable for better performance (slower training)
 
 # Date ranges for Rolling Window Strategy
 ITERATIONS = [
@@ -118,9 +119,10 @@ def get_2022_backtest_config():
     )
 
 
-def train_model(df_train, model_type='xgboost'):
+def train_model(df_train, model_type='xgboost', hyperparameter_tuning=False):
     """Train ML model on training data"""
-    print("\n   Training ML model...")
+    tuning_status = "WITH hyperparameter tuning" if hyperparameter_tuning else "without tuning"
+    print(f"\n   Training ML model ({tuning_status})...")
 
     # Get feature columns (exclude target and non-features)
     exclude_cols = ['target_class', 'target_regression', 'target_binary',
@@ -138,12 +140,14 @@ def train_model(df_train, model_type='xgboost'):
     # Initialize trainer
     trainer = MLModelTrainer(model_type=model_type, task='classification')
 
-    # Train model
+    # Train model with optional hyperparameter tuning
     try:
-        results = trainer.train(X_train, y_train, hyperparameter_tuning=False)
+        results = trainer.train(X_train, y_train, hyperparameter_tuning=hyperparameter_tuning)
         print(f"   ✅ Model trained on {len(df_train)} samples")
         if results and 'train_accuracy' in results:
             print(f"   Training accuracy: {results['train_accuracy']:.2f}%")
+        if hyperparameter_tuning and results:
+            print(f"   Best hyperparameters: {results.get('best_params', 'N/A')}")
     except Exception as e:
         print(f"   Training completed with warnings: {e}")
 
@@ -171,6 +175,10 @@ def main():
     print(f"\nTest Period: January-April 2022")
     print(f"Market Context: Start of bear market, -13.31% buy & hold")
     print(f"Volatility: VIX 25-35 (elevated)")
+    print(f"\nConfiguration:")
+    print(f"  Model Type: {MODEL_TYPE}")
+    print(f"  Hyperparameter Tuning: {'ENABLED' if HYPERPARAMETER_TUNING else 'Disabled'}")
+    print(f"  Confidence Threshold: {CONFIDENCE_THRESHOLD}")
 
     # Load data
     try:
@@ -230,7 +238,7 @@ def main():
 
         # Train model
         try:
-            trainer, feature_cols = train_model(df_train, MODEL_TYPE)
+            trainer, feature_cols = train_model(df_train, MODEL_TYPE, HYPERPARAMETER_TUNING)
 
             # Save model using trainer's save method
             temp_model_path = OUTPUT_DIR / 'models' / f'{config["name"]}.pkl'
