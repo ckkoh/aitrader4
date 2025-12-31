@@ -1,0 +1,87 @@
+{
+  "timestamp": "2025-12-30T23:12:51.724073",
+  "ensemble_file": "models/ensemble_4models_20251230_231137.pkl",
+  "model_types": [
+    "RandomForest",
+    "XGBoost",
+    "GradientBoosting",
+    "LogisticRegression"
+  ],
+  "features": 20,
+  "buy_hold_return": 0.17673709250265626,
+  "individual_performance": {
+    "RandomForest": {
+      "train_accuracy": 0.7739791073124407,
+      "val_accuracy": 0.5581395348837209,
+      "val_precision": 0.5853658536585366,
+      "val_recall": 0.9230769230769231,
+      "val_f1": 0.7164179104477612
+    },
+    "XGBoost": {
+      "train_accuracy": 0.9829059829059829,
+      "val_accuracy": 0.4186046511627907,
+      "val_precision": 0.52,
+      "val_recall": 0.5,
+      "val_f1": 0.5098039215686274
+    },
+    "GradientBoosting": {
+      "train_accuracy": 0.9990503323836657,
+      "val_accuracy": 0.4883720930232558,
+      "val_precision": 0.5769230769230769,
+      "val_recall": 0.5769230769230769,
+      "val_f1": 0.5769230769230769
+    },
+    "LogisticRegression": {
+      "train_accuracy": 0.5498575498575499,
+      "val_accuracy": 0.627906976744186,
+      "val_precision": 0.6190476190476191,
+      "val_recall": 1.0,
+      "val_f1": 0.7647058823529411
+    }
+  },
+  "ensemble_validation_accuracy": 0.5813953488372093,
+  "single_model_backtest": {
+    "trades": 2,
+    "win_rate": 1.0,
+    "return_pct": 3.343618684705216,
+    "sharpe": 0.468348629652916
+  },
+  "ensemble_backtest": {
+    "results_by_agreement": {
+      "2": {
+        "agreement_level": "2/4",
+        "total_trades": 4,
+        "win_rate": 0.5,
+        "total_return_pct": 0.5539505645559438,
+        "sharpe_ratio": -0.4835198430782113,
+        "max_drawdown_pct": 3.1177496346718,
+        "profit_factor": 1.1715207587411292
+      },
+      "3": {
+        "agreement_level": "3/4",
+        "total_trades": 1,
+        "win_rate": 1.0,
+        "total_return_pct": 0.4324060473393001,
+        "sharpe_ratio": -1.043952404087314,
+        "max_drawdown_pct": 1.6370050754900802,
+        "profit_factor": 0
+      },
+      "4": {
+        "agreement_level": "4/4",
+        "total_trades": 0,
+        "win_rate": 0,
+        "total_return_pct": 0,
+        "sharpe_ratio": 0,
+        "max_drawdown_pct": 0,
+        "profit_factor": 0
+      }
+    },
+    "best_config": {
+      "agreement_level": "2/4",
+      "trades": 4,
+      "win_rate": 0.5,
+      "return_pct": 0.5539505645559438,
+      "sharpe": -0.4835198430782113
+    }
+  }
+}

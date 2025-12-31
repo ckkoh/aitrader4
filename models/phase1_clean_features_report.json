@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-12-30T23:00:09.481284",
+  "improvement": {
+    "accuracy_change": -0.09302325581395354,
+    "features_reduced": 66,
+    "data_quality": "CLEAN"
+  },
+  "original_model": {
+    "features": 86,
+    "val_accuracy": 0.6511627906976745,
+    "data_leakage": true,
+    "leakage_features": [
+      "target_regression",
+      "future_return",
+      "target_binary",
+      "target_class",
+      "future_return_5",
+      "future_return_10",
+      "future_volatility"
+    ]
+  },
+  "clean_model": {
+    "features": 20,
+    "val_accuracy": 0.5581395348837209,
+    "val_precision": 0.5853658536585366,
+    "val_recall": 0.9230769230769231,
+    "val_f1": 0.7164179104477612,
+    "data_leakage": false,
+    "selected_features": [
+      "price_vs_sma_50",
+      "co_ratio",
+      "volatility_50",
+      "adx_14",
+      "log_returns",
+      "returns",
+      "rsi_14",
+      "stoch_k_14",
+      "returns_lag_5",
+      "price_vs_sma_200",
+      "returns_lag_3",
+      "hl_ratio",
+      "parkinson_vol_10",
+      "returns_lag_1",
+      "momentum_20",
+      "volatility_10",
+      "sma_20_slope",
+      "volatility_20",
+      "williams_r_14",
+      "plus_di_14"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "training_date": "2025-12-30 20:59:54",
+  "train_period": "2020-2024",
+  "val_period": "2025 YTD",
+  "train_samples": 1054,
+  "val_samples": 44,
+  "num_features": 86,
+  "models_trained": {
+    "xgboost": {
+      "error": "MLModelTrainer.__init__() got an unexpected keyword argument 'X_train'"
+    },
+    "random_forest": {
+      "error": "MLModelTrainer.__init__() got an unexpected keyword argument 'X_train'"
+    },
+    "gradient_boosting": {
+      "error": "MLModelTrainer.__init__() got an unexpected keyword argument 'X_train'"
+    },
+    "logistic": {
+      "error": "MLModelTrainer.__init__() got an unexpected keyword argument 'X_train'"
+    }
+  }
+}

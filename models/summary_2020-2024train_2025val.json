@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-12-30T21:01:13.960986",
+  "train_period": "2020-2024",
+  "val_period": "2025 YTD",
+  "train_samples": 1053,
+  "val_samples": 43,
+  "features": 86,
+  "best_model": "RandomForest",
+  "best_val_acc": 0.6511627906976745,
+  "results": {
+    "XGBoost": {
+      "train_acc": 1.0,
+      "val_acc": 0.4883720930232558,
+      "val_precision": 0.5909090909090909,
+      "val_recall": 0.5,
+      "val_f1": 0.5416666666666666,
+      "model_file": "models/xgboost_2020-2024train_2025val_20251230_210109.pkl"
+    },
+    "RandomForest": {
+      "train_acc": 0.9658119658119658,
+      "val_acc": 0.6511627906976745,
+      "val_precision": 0.7037037037037037,
+      "val_recall": 0.7307692307692307,
+      "val_f1": 0.7169811320754716,
+      "model_file": "models/randomforest_2020-2024train_2025val_20251230_210110.pkl"
+    },
+    "GradientBoosting": {
+      "train_acc": 0.9952516619183286,
+      "val_acc": 0.5813953488372093,
+      "val_precision": 0.6666666666666666,
+      "val_recall": 0.6153846153846154,
+      "val_f1": 0.64,
+      "model_file": "models/gradientboosting_2020-2024train_2025val_20251230_210113.pkl"
+    },
+    "LogisticRegression": {
+      "train_acc": 0.5441595441595442,
+      "val_acc": 0.6511627906976745,
+      "val_precision": 0.6896551724137931,
+      "val_recall": 0.7692307692307693,
+      "val_f1": 0.7272727272727273,
+      "model_file": "models/logisticregression_2020-2024train_2025val_20251230_210113.pkl"
+    }
+  }
+}

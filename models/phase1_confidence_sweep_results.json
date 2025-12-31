@@ -1,0 +1,98 @@
+{
+  "timestamp": "2025-12-30T23:03:28.261843",
+  "model": "models/randomforest_CLEAN_top20_20251230_230009.pkl",
+  "test_period": "2025-01-02 to 2025-12-29",
+  "buy_hold_return": 0.17673709250265626,
+  "thresholds_tested": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7
+  ],
+  "results": {
+    "0.5": {
+      "threshold": 0.5,
+      "total_trades": 4,
+      "win_rate": 0.5,
+      "total_return_pct": 0.2565297103082048,
+      "sharpe_ratio": -0.4054610421364178,
+      "sortino_ratio": -0.22975781242500443,
+      "max_drawdown_pct": 4.30717463115817,
+      "profit_factor": 1.0562641479291974,
+      "expectancy": 5.826776545087554,
+      "avg_win": 218.77573513832255,
+      "avg_loss": 207.12218204814744,
+      "winning_trades": 2,
+      "losing_trades": 2
+    },
+    "0.55": {
+      "threshold": 0.55,
+      "total_trades": 4,
+      "win_rate": 0.5,
+      "total_return_pct": -0.5006173951114216,
+      "sharpe_ratio": -0.640348009486446,
+      "sortino_ratio": -0.33624884410559613,
+      "max_drawdown_pct": 4.2971120182813864,
+      "profit_factor": 0.879008664074851,
+      "expectancy": -12.997833092796938,
+      "avg_win": 188.85993472847508,
+      "avg_loss": 214.85560091406896,
+      "winning_trades": 2,
+      "losing_trades": 2
+    },
+    "0.6": {
+      "threshold": 0.6,
+      "total_trades": 2,
+      "win_rate": 1.0,
+      "total_return_pct": 3.343618684705216,
+      "sharpe_ratio": 0.468348629652916,
+      "sortino_ratio": 0.19860424492748915,
+      "max_drawdown_pct": 1.6111547625559508,
+      "profit_factor": 0,
+      "expectancy": 166.22342551150336,
+      "avg_win": 166.22342551150336,
+      "avg_loss": 0,
+      "winning_trades": 2,
+      "losing_trades": 0
+    },
+    "0.65": {
+      "threshold": 0.65,
+      "total_trades": 1,
+      "win_rate": 1.0,
+      "total_return_pct": 0.3236285936148488,
+      "sharpe_ratio": -1.0736816171209913,
+      "sortino_ratio": -0.3660733255146075,
+      "max_drawdown_pct": 1.7061855562808574,
+      "profit_factor": 0,
+      "expectancy": 30.39222998714051,
+      "avg_win": 30.39222998714051,
+      "avg_loss": 0,
+      "winning_trades": 1,
+      "losing_trades": 0
+    },
+    "0.7": {
+      "threshold": 0.7,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "sortino_ratio": 0,
+      "max_drawdown_pct": 0,
+      "profit_factor": 0,
+      "expectancy": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "winning_trades": 0,
+      "losing_trades": 0
+    }
+  },
+  "best_threshold": {
+    "threshold": 0.6,
+    "total_trades": 2,
+    "win_rate": 1.0,
+    "total_return_pct": 3.343618684705216,
+    "sharpe_ratio": 0.468348629652916,
+    "max_drawdown_pct": 1.6111547625559508
+  }
+}

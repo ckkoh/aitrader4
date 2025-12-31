@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-12-30T23:25:08.453916",
+  "model_file": "models/logistic_regression_regime_20251230_232411.pkl",
+  "model_type": "LogisticRegression",
+  "features": 30,
+  "regime_features": 0,
+  "buy_hold_return": 0.17673709250265626,
+  "model_performance": {
+    "train_accuracy": 0.5308641975308642,
+    "val_accuracy": 0.6046511627906976,
+    "val_precision": 0.6046511627906976,
+    "val_recall": 1.0,
+    "val_f1": 0.7536231884057971
+  },
+  "phase1_best": {
+    "model": "RandomForest",
+    "features": 20,
+    "val_accuracy": 0.558,
+    "trades": 2,
+    "win_rate": 1.0,
+    "return_pct": 3.343618684705216
+  },
+  "phase2_results": {
+    "0.55": {
+      "threshold": 0.55,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown_pct": 0
+    },
+    "0.57": {
+      "threshold": 0.57,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown_pct": 0
+    },
+    "0.58": {
+      "threshold": 0.58,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown_pct": 0
+    },
+    "0.6": {
+      "threshold": 0.6,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown_pct": 0
+    },
+    "0.62": {
+      "threshold": 0.62,
+      "total_trades": 0,
+      "win_rate": 0,
+      "total_return_pct": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown_pct": 0
+    }
+  },
+  "best_config": {
+    "threshold": 0.55,
+    "trades": 0,
+    "win_rate": 0.0,
+    "return_pct": 0.0,
+    "vs_phase1": -3.343618684705216
+  }
+}

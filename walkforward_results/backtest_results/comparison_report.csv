@@ -1,0 +1,16 @@
+Metric,Dataset_1_Recent,Dataset_2_Historical
+Total Splits,30,50
+Total Trades,40,70
+Avg Return (%),0.00,0.00
+Median Return (%),0.00,0.00
+Std Dev Return (%),0.00,0.00
+Avg Sharpe Ratio,0.310,-0.453
+Median Sharpe Ratio,0.853,-0.398
+Avg Win Rate (%),65.00,43.67
+Avg Max Drawdown (%),0.00,0.00
+Max Max Drawdown (%),0.00,0.00
+Avg Profit Factor,6.11,13.32
+Positive Returns (%),0.0,0.0
+Sharpe > 1.0 (%),50.0,28.0
+Return Consistency,1.000,1.000
+Sharpe Consistency,-5.637,-4.824

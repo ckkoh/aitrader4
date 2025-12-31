@@ -1,0 +1,65 @@
+# Configuration files with sensitive credentials
+config.py
+.env
+
+# Database files
+trading_data.db
+*.db
+*.sqlite
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Trained ML models (can be large)
+models/*.pkl
+models/*.joblib
+models/*.h5
+
+# Logs
+logs/
+*.log
+
+# Backups
+backups/
+*.bak
+
+# Results and output
+results/*.json
+results/*.csv
+data/*.csv
+data/*.parquet
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage reports
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/

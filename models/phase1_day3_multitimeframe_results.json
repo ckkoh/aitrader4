@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-12-30T23:09:29.573969",
+  "model_file": "models/randomforest_MULTITIMEFRAME_20251230_230712.pkl",
+  "horizons": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "features": 20,
+  "buy_hold_return": 0.17673709250265626,
+  "single_timeframe": {
+    "trades": 2,
+    "win_rate": 1.0,
+    "return_pct": 3.343618684705216,
+    "sharpe": 0.468348629652916
+  },
+  "multi_timeframe": {
+    "model_performance": {
+      "1": {
+        "train_accuracy": 0.7739791073124407,
+        "val_accuracy": 0.5581395348837209,
+        "val_precision": 0.5853658536585366,
+        "val_recall": 0.9230769230769231,
+        "val_f1": 0.7164179104477612
+      },
+      "3": {
+        "train_accuracy": 0.7611798287345385,
+        "val_accuracy": 0.4878048780487805,
+        "val_precision": 0.4878048780487805,
+        "val_recall": 1.0,
+        "val_f1": 0.6557377049180327
+      },
+      "5": {
+        "train_accuracy": 0.771210676835081,
+        "val_accuracy": 0.5641025641025641,
+        "val_precision": 0.5789473684210527,
+        "val_recall": 0.9565217391304348,
+        "val_f1": 0.7213114754098361
+      },
+      "10": {
+        "train_accuracy": 0.8122605363984674,
+        "val_accuracy": 0.4117647058823529,
+        "val_precision": 0.4117647058823529,
+        "val_recall": 1.0,
+        "val_f1": 0.5833333333333334
+      }
+    },
+    "backtest_results": {
+      "2": {
+        "agreement_level": "2/4",
+        "total_trades": 4,
+        "win_rate": 0.5,
+        "total_return_pct": 0.2565297103082048,
+        "sharpe_ratio": -0.4054610421364178,
+        "max_drawdown_pct": 4.30717463115817,
+        "profit_factor": 1.0562641479291974
+      },
+      "3": {
+        "agreement_level": "3/4",
+        "total_trades": 3,
+        "win_rate": 0.3333333333333333,
+        "total_return_pct": -2.608606658178069,
+        "sharpe_ratio": -1.2579044527797745,
+        "max_drawdown_pct": 4.813528405044887,
+        "profit_factor": 0.3647723101954448
+      },
+      "4": {
+        "agreement_level": "4/4",
+        "total_trades": 2,
+        "win_rate": 1.0,
+        "total_return_pct": 3.343618684705216,
+        "sharpe_ratio": 0.468348629652916,
+        "max_drawdown_pct": 1.6111547625559508,
+        "profit_factor": 0
+      }
+    },
+    "best_config": {
+      "agreement_level": "4/4",
+      "trades": 2,
+      "win_rate": 1.0,
+      "return_pct": 3.343618684705216,
+      "sharpe": 0.468348629652916
+    }
+  }
+}
