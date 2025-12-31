@@ -23,12 +23,12 @@ def test_fetch_data():
     )
     print("✅ Connected successfully")
 
-    # Test 1: Fetch last 100 H1 candles
+    # Test 1: Fetch last 100 Daily candles
     print("\n" + "=" * 70)
-    print("TEST 1: Fetch last 100 H1 candles for EUR_USD")
+    print("TEST 1: Fetch last 100 Daily candles for SPX500_USD")
     print("=" * 70)
 
-    df1 = oanda.fetch_historical_data('EUR_USD', 'H1', count=100)
+    df1 = oanda.fetch_historical_data('SPX500_USD', 'D', count=100)
 
     if not df1.empty:
         print(f"✅ Fetched {len(df1)} candles")
@@ -52,17 +52,17 @@ def test_fetch_data():
         print("❌ No data fetched")
         return False
 
-    # Test 2: Fetch last 30 days of H1 data
+    # Test 2: Fetch last 30 days of Daily data
     print("\n" + "=" * 70)
-    print("TEST 2: Fetch last 30 days of H1 data for GBP_USD")
+    print("TEST 2: Fetch last 30 days of Daily data for SPX500_USD")
     print("=" * 70)
 
-    df2 = oanda.fetch_historical_data_range('GBP_USD', 'H1', days=30)
+    df2 = oanda.fetch_historical_data_range('SPX500_USD', 'D', days=30)
 
     if not df2.empty:
         print(f"✅ Fetched {len(df2)} candles")
         print(f"Date range: {df2.index[0]} to {df2.index[-1]}")
-        print("\nExpected ~720 candles (30 days * 24 hours)")
+        print("\nExpected ~30 candles (30 trading days)")
         print(f"Actual: {len(df2)} candles")
 
         # Calculate some statistics
@@ -78,10 +78,10 @@ def test_fetch_data():
 
     # Test 3: Fetch D1 (daily) candles
     print("\n" + "=" * 70)
-    print("TEST 3: Fetch last 90 daily candles for USD_JPY")
+    print("TEST 3: Fetch last 90 daily candles for SPX500_USD")
     print("=" * 70)
 
-    df3 = oanda.fetch_historical_data('USD_JPY', 'D', count=90)
+    df3 = oanda.fetch_historical_data('SPX500_USD', 'D', count=90)
 
     if not df3.empty:
         print(f"✅ Fetched {len(df3)} candles")
@@ -101,7 +101,7 @@ def test_fetch_data():
         import os
         os.makedirs('data', exist_ok=True)
 
-        csv_file = 'data/EUR_USD_H1_recent.csv'
+        csv_file = 'data/SPX500_USD_Daily_recent.csv'
         df1.to_csv(csv_file)
         print(f"✅ Saved {len(df1)} candles to {csv_file}")
 
@@ -129,7 +129,7 @@ def test_fetch_data():
     print("1. Backtest on real data:")
     print("   python3 backtest_real_data.py")
     print("\n2. Train ML model on real data:")
-    print("   # Use df = oanda.fetch_historical_data_range('EUR_USD', 'H1', days=365)")
+    print("   # Use df = oanda.fetch_historical_data_range('SPX500_USD', 'D', days=365)")
     print("\n3. Run walk-forward on real data:")
     print("   # Update run_examples.py to use real data")
 

@@ -83,8 +83,8 @@ def test_oanda_connection():
             print(f"  Margin Available: {account.get('marginAvailable', 'N/A')}")
 
             # Test getting current prices
-            print("\nFetching current prices for EUR_USD, GBP_USD, USD_JPY...")
-            prices = oanda.get_current_prices(['EUR_USD', 'GBP_USD', 'USD_JPY'])
+            print("\nFetching current prices for SPX500_USD, SPX500_USD, SPX500_USD...")
+            prices = oanda.get_current_prices(['SPX500_USD', 'SPX500_USD', 'SPX500_USD'])
 
             if prices:
                 print("\nCurrent Prices:")

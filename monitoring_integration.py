@@ -335,7 +335,7 @@ def main():
     from complete_workflow import TradingSystemPipeline
 
     pipeline = TradingSystemPipeline()
-    pipeline.load_oanda_data(instrument='EUR_USD', days=365)
+    pipeline.load_oanda_data(instrument='SPX500_USD', days=365)
 
     # Get historical data
     df = pipeline.data

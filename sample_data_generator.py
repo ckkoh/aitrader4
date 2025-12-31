@@ -27,8 +27,8 @@ class TradeGenerator:
         np.random.seed(seed)
 
         self.instruments = [
-            'EUR_USD', 'GBP_USD', 'USD_JPY', 'AUD_USD',
-            'USD_CAD', 'NZD_USD', 'EUR_GBP', 'EUR_JPY'
+            'SPX500_USD', 'SPX500_USD', 'SPX500_USD', 'SPX500_USD',
+            'SPX500_USD', 'SPX500_USD', 'SPX500_USD', 'SPX500_USD'
         ]
 
         self.strategies = [
@@ -51,7 +51,7 @@ class TradeGenerator:
         direction = random.choice(['long', 'short'])
         strategy = random.choice(self.strategies)
 
-        # Entry and exit prices (realistic forex range)
+        # Entry and exit prices (realistic S&P 500 range)
         if 'JPY' in instrument:
             base_price = random.uniform(100, 150)
             volatility = random.uniform(0.1, 0.5)

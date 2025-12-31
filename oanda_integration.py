@@ -159,7 +159,7 @@ class OandaConnector:
         Get current bid/ask prices for instruments
 
         Args:
-            instruments: List of instrument names (e.g., ['EUR_USD', 'GBP_USD'])
+            instruments: List of instrument names (e.g., ['SPX500_USD', 'SPX500_USD'])
 
         Returns:
             Dictionary mapping instrument to price data
@@ -193,7 +193,7 @@ class OandaConnector:
         Place a market order
 
         Args:
-            instrument: Trading instrument (e.g., 'EUR_USD')
+            instrument: Trading instrument (e.g., 'SPX500_USD')
             units: Number of units (positive for long, negative for short)
             stop_loss: Stop loss price
             take_profit: Take profit price
@@ -239,7 +239,7 @@ class OandaConnector:
         Close an open position
 
         Args:
-            instrument: Instrument to close (e.g., 'EUR_USD')
+            instrument: Instrument to close (e.g., 'SPX500_USD')
 
         Returns:
             Response dictionary
@@ -273,7 +273,7 @@ class OandaConnector:
                 logger.error(f"Error closing position: {e2}")
                 return {"error": str(e2)}
 
-    def fetch_historical_data(self, instrument: str, granularity: str = 'H1',
+    def fetch_historical_data(self, instrument: str, granularity: str = 'D',
                               count: Optional[int] = None,
                               start_time: Optional[str] = None,
                               end_time: Optional[str] = None) -> pd.DataFrame:
@@ -281,8 +281,8 @@ class OandaConnector:
         Fetch historical OHLCV data from Oanda
 
         Args:
-            instrument: Trading pair (e.g., 'EUR_USD')
-            granularity: Candle size - 'M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D', 'W', 'M'
+            instrument: Trading pair (e.g., 'SPX500_USD')
+            granularity: Candle size - 'M1', 'M5', 'M15', 'M30', 'D', 'H4', 'D', 'W', 'M'
             count: Number of candles to fetch (max 5000). If None, uses start_time/end_time
             start_time: ISO format datetime string (e.g., '2023-01-01T00:00:00Z')
             end_time: ISO format datetime string (e.g., '2023-12-31T23:59:59Z')
@@ -293,12 +293,12 @@ class OandaConnector:
 
         Examples:
             # Get last 500 H1 candles
-            df = oanda.fetch_historical_data('EUR_USD', 'H1', count=500)
+            df = oanda.fetch_historical_data('SPX500_USD', 'D', count=500)
 
             # Get specific date range
             df = oanda.fetch_historical_data(
-                'EUR_USD',
-                'H1',
+                'SPX500_USD',
+                'D',
                 start_time='2023-01-01T00:00:00Z',
                 end_time='2023-12-31T23:59:59Z'
             )
@@ -361,14 +361,14 @@ class OandaConnector:
             logger.error(f"Error fetching historical data: {e}")
             return pd.DataFrame()
 
-    def fetch_historical_data_range(self, instrument: str, granularity: str = 'H1',
+    def fetch_historical_data_range(self, instrument: str, granularity: str = 'D',
                                     days: int = 365) -> pd.DataFrame:
         """
         Fetch historical data for a specific number of days
         Handles pagination if needed (Oanda max 5000 candles per request)
 
         Args:
-            instrument: Trading pair (e.g., 'EUR_USD')
+            instrument: Trading pair (e.g., 'SPX500_USD')
             granularity: Candle size
             days: Number of days of history to fetch
 
@@ -387,7 +387,7 @@ class OandaConnector:
             # Calculate approximate number of candles
             granularity_minutes = {
                 'M1': 1, 'M5': 5, 'M15': 15, 'M30': 30,
-                'H1': 60, 'H4': 240, 'D': 1440, 'W': 10080
+                'D': 60, 'H4': 240, 'D': 1440, 'W': 10080
             }
 
             minutes_per_candle = granularity_minutes.get(granularity, 60)
@@ -567,7 +567,7 @@ if __name__ == "__main__":
         print(f"  {trade['instrument']}: ${trade['pnl']:.2f}")
 
     # Get current prices
-    instrument_list = ['EUR_USD', 'GBP_USD', 'USD_JPY']
+    instrument_list = ['SPX500_USD', 'SPX500_USD', 'SPX500_USD']
     prices = oanda.get_current_prices(instrument_list)
     print("\nCurrent Prices:")
     for inst, price_data in prices.items():

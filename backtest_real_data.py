@@ -27,9 +27,9 @@ def backtest_on_real_data():
         environment=OANDA_CONFIG['environment']
     )
 
-    # Fetch 6 months of H1 data for EUR_USD
-    print("   Fetching 180 days of EUR_USD H1 data...")
-    df = oanda.fetch_historical_data_range('EUR_USD', 'H1', days=180)
+    # Fetch 6 months of H1 data for SPX500_USD
+    print("   Fetching 180 days of SPX500_USD H1 data...")
+    df = oanda.fetch_historical_data_range('SPX500_USD', 'D', days=180)
 
     if df.empty:
         print("❌ Failed to fetch data")
@@ -160,8 +160,8 @@ def backtest_on_real_data():
         output = {
             'timestamp': timestamp,
             'data_source': 'Oanda Real Data',
-            'instrument': 'EUR_USD',
-            'granularity': 'H1',
+            'instrument': 'SPX500_USD',
+            'granularity': 'D',
             'data_points': len(df),
             'date_range': {
                 'start': str(df.index[0]),
@@ -176,7 +176,7 @@ def backtest_on_real_data():
         print(f"✅ Results saved to {results_file}")
 
         # Save data
-        data_file = 'data/EUR_USD_H1_180days.csv'
+        data_file = 'data/SPX500_USD_H1_180days.csv'
         df.to_csv(data_file)
         print(f"✅ Data saved to {data_file}")
 

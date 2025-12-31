@@ -35,7 +35,7 @@ class MomentumStrategy(Strategy):
         if len(data) < self.slow_period + 1:
             return signals
 
-        instrument = 'EUR_USD'  # Can be parameterized
+        instrument = 'SPX500_USD'  # Can be parameterized
 
         # Calculate indicators
         fast_ma = data['close'].rolling(window=self.fast_period).mean()
@@ -133,7 +133,7 @@ class MeanReversionStrategy(Strategy):
         if len(data) < self.bb_period + 1:
             return signals
 
-        instrument = 'EUR_USD'
+        instrument = 'SPX500_USD'
 
         # Bollinger Bands
         sma = data['close'].rolling(window=self.bb_period).mean()
@@ -223,7 +223,7 @@ class BreakoutStrategy(Strategy):
         if len(data) < self.lookback_period + 1:
             return signals
 
-        instrument = 'EUR_USD'
+        instrument = 'SPX500_USD'
 
         # Calculate channel
         high_channel = data['high'].rolling(window=self.lookback_period).max()
@@ -337,7 +337,7 @@ class MLStrategy(Strategy):
         if len(data) < 200:  # Need enough data for features
             return signals
 
-        instrument = 'EUR_USD'
+        instrument = 'SPX500_USD'
 
         try:
             # Get current features
@@ -462,7 +462,7 @@ class EnsembleStrategy(Strategy):
                 avg_tp = np.mean([s['take_profit'] for s in buy_signals])
 
                 return [{
-                    'instrument': 'EUR_USD',
+                    'instrument': 'SPX500_USD',
                     'action': 'buy',
                     'stop_loss': avg_stop,
                     'take_profit': avg_tp,
@@ -475,7 +475,7 @@ class EnsembleStrategy(Strategy):
                 avg_tp = np.mean([s['take_profit'] for s in sell_signals])
 
                 return [{
-                    'instrument': 'EUR_USD',
+                    'instrument': 'SPX500_USD',
                     'action': 'sell',
                     'stop_loss': avg_stop,
                     'take_profit': avg_tp,
@@ -484,7 +484,7 @@ class EnsembleStrategy(Strategy):
 
             elif close_votes > threshold:
                 return [{
-                    'instrument': 'EUR_USD',
+                    'instrument': 'SPX500_USD',
                     'action': 'close',
                     'reason': f'ensemble_close_{close_votes}/{total_strategies}'
                 }]
@@ -497,7 +497,7 @@ class EnsembleStrategy(Strategy):
                 avg_tp = np.mean([s['take_profit'] for s in buy_signals])
 
                 return [{
-                    'instrument': 'EUR_USD',
+                    'instrument': 'SPX500_USD',
                     'action': 'buy',
                     'stop_loss': avg_stop,
                     'take_profit': avg_tp,
@@ -510,7 +510,7 @@ class EnsembleStrategy(Strategy):
                 avg_tp = np.mean([s['take_profit'] for s in sell_signals])
 
                 return [{
-                    'instrument': 'EUR_USD',
+                    'instrument': 'SPX500_USD',
                     'action': 'sell',
                     'stop_loss': avg_stop,
                     'take_profit': avg_tp,

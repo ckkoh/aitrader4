@@ -43,8 +43,8 @@ class TradingSystemPipeline:
         self.models_dir.mkdir(exist_ok=True)
         self.results_dir.mkdir(exist_ok=True)
 
-    def load_oanda_data(self, instrument: str = 'EUR_USD',
-                        granularity: str = 'H1',
+    def load_oanda_data(self, instrument: str = 'SPX500_USD',
+                        granularity: str = 'D',
                         days: int = 365) -> pd.DataFrame:
         """
         Load data from Oanda API
@@ -91,7 +91,7 @@ class TradingSystemPipeline:
         periods = days * 24
         dates = pd.date_range(end=datetime.now(), periods=periods, freq='1H')
 
-        # Simulate realistic forex price movements
+        # Simulate realistic S&P 500 price movements
         np.random.seed(42)
 
         # Trend component
@@ -482,7 +482,7 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
         try:
             # Load data
-            self.load_oanda_data(instrument='EUR_USD', days=365)
+            self.load_oanda_data(instrument='SPX500_USD', days=365)
 
             # Step 1: Feature engineering
             df_features = self.step1_prepare_features()

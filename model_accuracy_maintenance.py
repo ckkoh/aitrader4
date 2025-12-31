@@ -752,7 +752,7 @@ if __name__ == "__main__":
 
     # 2. Initialize monitoring system
     monitor = ContinuousMonitoringSystem(
-        model_name='EUR_USD_Model_v1',
+        model_name='SPX500_USD_Model_v1',
         baseline_metrics=baseline_metrics,
         baseline_features=baseline_features,
         retraining_config=retraining_config
