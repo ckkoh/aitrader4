@@ -170,7 +170,7 @@ def save_iteration_results(iteration, month_name, results, train_data, test_data
 def main():
     print("="*70)
     print("WALK-FORWARD TRAINING PLAN: JAN-APR 2022")
-    print("S&P 500 Trading System - Bear Market Test")
+    print("S&P 500 Trading System - Bear Market Test with Regime Adaptation")
     print("="*70)
     print(f"\nTest Period: January-April 2022")
     print(f"Market Context: Start of bear market, -13.31% buy & hold")
@@ -178,7 +178,8 @@ def main():
     print(f"\nConfiguration:")
     print(f"  Model Type: {MODEL_TYPE}")
     print(f"  Hyperparameter Tuning: {'ENABLED' if HYPERPARAMETER_TUNING else 'Disabled'}")
-    print(f"  Confidence Threshold: {CONFIDENCE_THRESHOLD}")
+    print(f"  Regime Adaptation: ENABLED (200-day MA based)")
+    print(f"  Base Confidence Threshold: {CONFIDENCE_THRESHOLD}")
 
     # Load data
     try:
@@ -250,11 +251,12 @@ def main():
             traceback.print_exc()
             continue
 
-        # Create strategy
+        # Create strategy with regime adaptation enabled
         strategy = MLStrategy(
             model_path=str(temp_model_path),
             feature_cols=feature_cols,
-            confidence_threshold=CONFIDENCE_THRESHOLD
+            confidence_threshold=CONFIDENCE_THRESHOLD,
+            regime_adaptive=True  # Enable regime-adaptive parameters
         )
 
         # Run backtest

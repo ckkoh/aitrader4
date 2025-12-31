@@ -3,12 +3,12 @@
   "month": "Mar_2022",
   "train_days": 253,
   "test_days": 23,
-  "trades": 3,
-  "win_rate": 66.66666666666666,
-  "total_return": 5.85688271669278,
-  "sharpe_ratio": -15.501910960010443,
-  "max_drawdown": 10.505641573188768,
-  "profit_factor": 1.6004982415073765,
+  "trades": 0,
+  "win_rate": 0,
+  "total_return": 0,
+  "sharpe_ratio": 0,
+  "max_drawdown": 0,
+  "profit_factor": 0,
   "train_samples": 253,
   "test_samples": 23
 }

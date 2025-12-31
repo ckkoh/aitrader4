@@ -5,10 +5,10 @@
   "test_days": 20,
   "trades": 4,
   "win_rate": 25.0,
-  "total_return": -13.332964652772716,
-  "sharpe_ratio": -20.877154469699136,
-  "max_drawdown": 21.88708315639633,
-  "profit_factor": 0.23443085473785244,
+  "total_return": -13.455348998153568,
+  "sharpe_ratio": -20.946601359236727,
+  "max_drawdown": 22.00936267299039,
+  "profit_factor": 0.23284762005124082,
   "train_samples": 252,
   "test_samples": 20
 }
