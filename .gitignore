@@ -24,6 +24,9 @@ ENV/
 models/*.pkl
 models/*.joblib
 models/*.h5
+**/*.pkl
+**/*.joblib
+**/*.h5
 
 # Logs
 logs/
