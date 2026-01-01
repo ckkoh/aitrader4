@@ -1,0 +1,13 @@
+{
+  "ensemble": {
+    "avg_win_rate": 0.39261904761904753,
+    "avg_return": 0.006981869818670625,
+    "avg_sharpe": -16.697307813315355,
+    "positive_periods_pct": 40.0,
+    "total_trades": 87,
+    "avg_trades_per_split": 5.8
+  },
+  "criteria_passed": 2,
+  "criteria_total": 6,
+  "validation_date": "2026-01-01T00:00:56.067923"
+}

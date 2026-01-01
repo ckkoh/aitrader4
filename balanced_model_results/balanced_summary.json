@@ -1,0 +1,13 @@
+{
+  "balanced": {
+    "avg_win_rate": 0.3961471861471861,
+    "avg_return": 0.017186533266734236,
+    "avg_sharpe": -16.46340013593818,
+    "positive_periods_pct": 40.0,
+    "total_trades": 94,
+    "avg_trades_per_split": 6.266666666666667
+  },
+  "criteria_passed": 2,
+  "criteria_total": 6,
+  "validation_date": "2025-12-31T23:48:41.427028"
+}

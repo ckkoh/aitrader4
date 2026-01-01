@@ -109,9 +109,9 @@ class RegimeDetector:
         Returns:
             Dict with regime, confidence, and reason
         """
-        # Thresholds
-        HIGH_VOL = 20  # 20% annualized volatility
-        STRONG_TREND = 5  # 5% distance between SMAs
+        # Thresholds (FIXED: lowered from 20% to 3% for ATR-based volatility)
+        HIGH_VOL = 3.0  # 3% ATR volatility (not annualized)
+        STRONG_TREND = 3.0  # 3% distance between SMAs (was 5%)
         STRONG_MOMENTUM = 10  # 10% momentum
 
         # 1. VOLATILE regime (highest priority)
@@ -122,12 +122,16 @@ class RegimeDetector:
                 'reason': f'High volatility ({volatility:.1f}%)'
             }
 
-        # 2. BEAR regime
-        if trend_direction == -1 and trend_strength > STRONG_TREND:
+        # 2. BEAR regime (FIXED: added momentum condition for crossover periods)
+        if (trend_direction == -1 and trend_strength > STRONG_TREND) or \
+           (momentum < -STRONG_MOMENTUM and volatility > 2.0):
             return {
                 'regime': 'BEAR',
-                'confidence': min(trend_strength / STRONG_TREND, 2.0),
-                'reason': f'Strong downtrend (strength: {trend_strength:.1f}%)'
+                'confidence': max(
+                    min(trend_strength / STRONG_TREND, 2.0) if trend_direction == -1 else 0,
+                    min(abs(momentum) / STRONG_MOMENTUM, 2.0) if momentum < -STRONG_MOMENTUM else 0
+                ),
+                'reason': f'Bearish conditions (trend: {trend_strength:.1f}%, momentum: {momentum:.1f}%)'
             }
 
         # 3. BULL regime
@@ -184,8 +188,8 @@ class RegimeAdaptiveMLStrategy(Strategy):
         self.skip_volatile_regimes = skip_volatile_regimes
         self.skip_bear_regimes = skip_bear_regimes
 
-        # Load model
-        self.model = self._load_model()
+        # Load model (keep trainer object, not raw model)
+        self.trainer = self._load_model()
 
         # Regime-specific settings
         self.regime_settings = {
@@ -226,13 +230,13 @@ class RegimeAdaptiveMLStrategy(Strategy):
         }
 
     def _load_model(self):
-        """Load trained ML model"""
+        """Load trained ML model (returns trainer object)"""
         if not Path(self.model_path).exists():
             raise FileNotFoundError(f"Model not found: {self.model_path}")
 
-        trainer = MLModelTrainer(model_type='xgboost', task='classification')
-        trainer.load_model(self.model_path)
-        return trainer.model
+        # load_model() is a STATIC method that returns a new trainer
+        trainer = MLModelTrainer.load_model(self.model_path)
+        return trainer
 
     def get_adaptive_settings(self, regime_info: Dict) -> Dict:
         """
@@ -285,8 +289,13 @@ class RegimeAdaptiveMLStrategy(Strategy):
         """
         signals = []
 
+        # DEBUG: Track signal generation attempts
+        debug_mode = True  # Set to False to disable debug logging
+
         # Need minimum data
         if len(data) < 200:
+            if debug_mode:
+                print(f"DEBUG [{timestamp.date()}]: Insufficient data ({len(data)} < 200)")
             return signals
 
         # 1. Detect current regime
@@ -295,11 +304,18 @@ class RegimeAdaptiveMLStrategy(Strategy):
         # 2. Get adaptive settings
         adaptive_settings = self.get_adaptive_settings(regime_info)
 
+        if debug_mode:
+            print(f"DEBUG [{timestamp.date()}]: Regime={regime_info['regime']}, "
+                  f"Threshold={adaptive_settings['confidence_threshold']:.2f}, "
+                  f"PosMultiplier={adaptive_settings['position_multiplier']:.1f}")
+
         # Track regime
         self.regime_stats[regime_info['regime']]['signals'] += 1
 
         # 3. Check if we should skip this regime
         if adaptive_settings['skip_trading']:
+            if debug_mode:
+                print(f"DEBUG [{timestamp.date()}]: Skipping {regime_info['regime']} regime")
             return signals
 
         # 4. Get current data point
@@ -307,25 +323,65 @@ class RegimeAdaptiveMLStrategy(Strategy):
 
         # 5. Extract features
         try:
-            features = current[self.feature_cols].values.reshape(1, -1)
-        except KeyError as e:
-            # Missing features
+            # Check each feature individually first
+            missing_features = [f for f in self.feature_cols if f not in current.index]
+            if missing_features:
+                if debug_mode:
+                    print(f"ERROR [{timestamp.date()}]: Missing {len(missing_features)} features!")
+                    print(f"  Missing: {missing_features[:5]}...")
+                return signals
+
+            # Extract features (avoid pandas fancy indexing broadcasting issues)
+            feature_values = [current[f] for f in self.feature_cols]
+            features = np.array(feature_values, dtype=np.float64).reshape(1, -1)
+            if debug_mode:
+                nan_count = np.isnan(features).sum()
+                print(f"DEBUG [{timestamp.date()}]: Features extracted. "
+                      f"Shape={features.shape}, NaN count={nan_count}")
+                if nan_count > 0:
+                    print(f"  WARNING: Features contain {nan_count} NaN values!")
+        except Exception as e:
+            if debug_mode:
+                print(f"ERROR [{timestamp.date()}]: Feature extraction failed! {type(e).__name__}: {e}")
+                print(f"  Checking each feature individually:")
+                for feat in self.feature_cols:
+                    try:
+                        val = current[feat]
+                        print(f"    {feat}: {type(val)} = {val}")
+                    except Exception as fe:
+                        print(f"    {feat}: ERROR - {fe}")
             return signals
 
-        # 6. Get ML prediction
+        # 6. Get ML prediction (use raw model to avoid "not trained" checks)
         try:
-            prediction_proba = self.model.predict_proba(features)[0]
-            confidence = prediction_proba[1]  # FIX: Use probability of BUY class, not max
+            prediction_proba = self.trainer.model.predict_proba(features)[0]
             predicted_class = int(prediction_proba[1] > 0.5)  # 1 = buy, 0 = sell/hold
+            confidence = prediction_proba[predicted_class]  # FIX: Use probability of PREDICTED class
+
+            if debug_mode:
+                print(f"DEBUG [{timestamp.date()}]: Prediction success!")
+                print(f"  Proba: [SELL={prediction_proba[0]:.3f}, BUY={prediction_proba[1]:.3f}]")
+                print(f"  Predicted class: {predicted_class} ({'BUY' if predicted_class == 1 else 'SELL'})")
+                print(f"  Confidence: {confidence:.3f}")
         except Exception as e:
+            if debug_mode:
+                print(f"ERROR [{timestamp.date()}]: Prediction failed! {type(e).__name__}: {e}")
+                print(f"  Features shape: {features.shape}")
+                print(f"  Features contain NaN: {np.isnan(features).any()}")
+                print(f"  First 5 feature values: {features[0][:5]}")
             return signals
 
         # 7. Check if confidence meets adjusted threshold
         if confidence < adaptive_settings['confidence_threshold']:
+            if debug_mode:
+                print(f"DEBUG [{timestamp.date()}]: Confidence {confidence:.3f} < threshold {adaptive_settings['confidence_threshold']:.3f} - NO SIGNAL")
             return signals
 
         # 8. Check if we have an open position
         has_position = len(self.positions) > 0
+
+        if debug_mode:
+            print(f"DEBUG [{timestamp.date()}]: Confidence check PASSED! Has position: {has_position}")
 
         if not has_position:
             # ENTRY LOGIC
@@ -360,31 +416,59 @@ class RegimeAdaptiveMLStrategy(Strategy):
                 stop_loss = current_price - (atr * stop_multiplier)
                 take_profit = current_price + (atr * profit_multiplier)
 
-                signals.append({
+                signal = {
                     'instrument': 'SPX500_USD',
                     'action': 'buy',
                     'stop_loss': stop_loss,
                     'take_profit': take_profit,
                     'position_size_multiplier': adaptive_settings['position_multiplier'],
-                    'reason': f"{regime_info['regime']}_ML_{confidence:.2f}"
-                })
+                    'reason': f"{regime_info['regime']}_ML_BUY_{confidence:.2f}"
+                }
+                signals.append(signal)
+
+                if debug_mode:
+                    print(f"✅ SIGNAL GENERATED [{timestamp.date()}]: BUY @ {current_price:.2f}")
+                    print(f"  Stop: {stop_loss:.2f}, Target: {take_profit:.2f}")
+                    print(f"  Reason: {signal['reason']}")
+
+                self.regime_stats[regime_info['regime']]['trades'] += 1
+
+            elif predicted_class == 0:  # Sell signal
+                stop_loss = current_price + (atr * stop_multiplier)
+                take_profit = current_price - (atr * profit_multiplier)
+
+                signal = {
+                    'instrument': 'SPX500_USD',
+                    'action': 'sell',
+                    'stop_loss': stop_loss,
+                    'take_profit': take_profit,
+                    'position_size_multiplier': adaptive_settings['position_multiplier'],
+                    'reason': f"{regime_info['regime']}_ML_SELL_{confidence:.2f}"
+                }
+                signals.append(signal)
+
+                if debug_mode:
+                    print(f"✅ SIGNAL GENERATED [{timestamp.date()}]: SELL @ {current_price:.2f}")
+                    print(f"  Stop: {stop_loss:.2f}, Target: {take_profit:.2f}")
+                    print(f"  Reason: {signal['reason']}")
 
                 self.regime_stats[regime_info['regime']]['trades'] += 1
 
         else:
             # EXIT LOGIC
-            # In volatile/bear markets, exit more quickly on negative signals
+            # In volatile/bear markets, exit more quickly on reversal signals
             if regime_info['regime'] in ['VOLATILE', 'BEAR']:
-                exit_threshold = 0.50  # Exit if confidence drops below 50%
+                exit_threshold = 0.50  # Exit if reverse signal has 50%+ confidence
             else:
-                exit_threshold = 0.45  # More lenient in bull/sideways
+                exit_threshold = 0.55  # More lenient in bull/sideways
 
-            # Exit if confidence for current position direction drops
-            if predicted_class == 0 and confidence > exit_threshold:
+            # Exit if we have a reversal signal with high confidence
+            # (This will trigger when model predicts opposite direction with high confidence)
+            if confidence >= exit_threshold:
                 signals.append({
                     'instrument': 'SPX500_USD',
                     'action': 'close',
-                    'reason': f"{regime_info['regime']}_Exit_LowConf"
+                    'reason': f"{regime_info['regime']}_Exit_Reversal_{confidence:.2f}"
                 })
 
         return signals

@@ -6,19 +6,19 @@
     "positive_periods_pct": 46.666666666666664
   },
   "adaptive": {
-    "avg_win_rate": 0.0,
-    "avg_return": 0.0,
-    "avg_sharpe": 0.0,
-    "positive_periods_pct": 0.0
+    "avg_win_rate": 0.4833597883597884,
+    "avg_return": -0.023245071667091294,
+    "avg_sharpe": -17.738424862888262,
+    "positive_periods_pct": 60.0
   },
   "improvements": {
-    "win_rate": -44.7936507936508,
-    "return": 1.7024824499570959,
-    "sharpe": 21.243715987689242,
-    "max_dd": 28.36082931428492,
-    "positive_periods": "-7"
+    "win_rate": 3.542328042328041,
+    "return": -0.6220247167520336,
+    "sharpe": 3.50529112480098,
+    "max_dd": -21.131721500198488,
+    "positive_periods": "2"
   },
-  "criteria_passed": 3,
+  "criteria_passed": 2,
   "criteria_total": 6,
-  "validation_date": "2025-12-31T17:26:36.155897"
+  "validation_date": "2025-12-31T23:38:52.611473"
 }
