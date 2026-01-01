@@ -1,0 +1,78 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs (will be mounted as volume)
+logs/
+*.log
+
+# Data files (will be mounted as volume)
+data/*.csv
+data/*.parquet
+
+# Database (will be mounted as volume)
+*.db
+*.sqlite
+
+# Large model files (will be mounted or regenerated)
+**/*.pkl
+**/*.joblib
+**/*.h5
+
+# Documentation (not needed in container)
+*.md
+docs/
+docs_archive/
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Docker files (don't need in image)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Configuration (will be mounted at runtime)
+config.py
+.env

@@ -1,6 +1,8 @@
 # Configuration files with sensitive credentials
 config.py
 .env
+.env.local
+.env.*.local
 
 # Database files
 trading_data.db

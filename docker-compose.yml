@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # Main trading bot service
+  aitrader4-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aitrader4_trading_bot
+    restart: unless-stopped
+    environment:
+      # Oanda Configuration (from .env file)
+      - OANDA_ACCOUNT_ID=${OANDA_ACCOUNT_ID}
+      - OANDA_API_TOKEN=${OANDA_API_TOKEN}
+      - OANDA_ENVIRONMENT=${OANDA_ENVIRONMENT:-practice}
+
+      # Strategy Configuration
+      - STRATEGY_NAME=${STRATEGY_NAME:-BalancedAdaptive}
+      - BASE_CONFIDENCE_THRESHOLD=${BASE_CONFIDENCE_THRESHOLD:-0.50}
+      - ENABLE_REGIME_ADAPTATION=${ENABLE_REGIME_ADAPTATION:-true}
+
+      # Risk Management
+      - INITIAL_CAPITAL=${INITIAL_CAPITAL:-10000.0}
+      - POSITION_SIZE_PCT=${POSITION_SIZE_PCT:-0.02}
+      - MAX_POSITION_VALUE_PCT=${MAX_POSITION_VALUE_PCT:-0.02}
+      - MAX_DAILY_LOSS_PCT=${MAX_DAILY_LOSS_PCT:-0.03}
+      - MAX_DRAWDOWN_PCT=${MAX_DRAWDOWN_PCT:-0.15}
+
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONUNBUFFERED=1
+
+    volumes:
+      # Mount config file (keep credentials secure)
+      - ./config.py:/app/config.py:ro
+
+      # Mount data directories (persist across container restarts)
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./balanced_model_results:/app/balanced_model_results
+      - ./trading_data.db:/app/trading_data.db
+
+    networks:
+      - aitrader4-network
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import psutil; exit(0)"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Streamlit dashboard service
+  aitrader4-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aitrader4_dashboard
+    restart: unless-stopped
+    command: streamlit run trading_dashboard_main.py --server.port=8501 --server.address=0.0.0.0
+    environment:
+      - OANDA_ACCOUNT_ID=${OANDA_ACCOUNT_ID}
+      - OANDA_API_TOKEN=${OANDA_API_TOKEN}
+      - OANDA_ENVIRONMENT=${OANDA_ENVIRONMENT:-practice}
+      - PYTHONUNBUFFERED=1
+
+    ports:
+      - "${DASHBOARD_PORT:-8501}:8501"
+
+    volumes:
+      # Share same data with bot
+      - ./config.py:/app/config.py:ro
+      - ./logs:/app/logs:ro
+      - ./data:/app/data:ro
+      - ./balanced_model_results:/app/balanced_model_results:ro
+      - ./trading_data.db:/app/trading_data.db
+
+    networks:
+      - aitrader4-network
+
+    depends_on:
+      - aitrader4-bot
+
+    # Health check for Streamlit
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  aitrader4-network:
+    driver: bridge
+
+volumes:
+  aitrader4-logs:
+  aitrader4-data:
+  aitrader4-models:
